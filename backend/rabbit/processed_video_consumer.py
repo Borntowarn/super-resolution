@@ -7,7 +7,7 @@ from pika.adapters.blocking_connection import BlockingChannel
 from pika.connection import Connection
 
 from backend import logger
-from backend.rabbit.connector import Connector
+from backend.rabbit.connectorAMQP import Connector
 from backend.rabbit.publisher import process_file
 
 
@@ -31,11 +31,11 @@ class VideoConsumerThread(Thread):
                             with self._check_lock:
                                 if len(self._callback_map) <= 0:
                                     no_items = True
-                            channel.basic_qos(prefetch_count=1)
+                            channel.basic_qos(prefetch_size=0, prefetch_count=1, a_global=False)
                             x = channel.basic_get(input_queue)
-                            if x != (None, None, None):
-                                channel.basic_ack(x[0].delivery_tag)
-                                self.callback(*x)
+                            if x:
+                                channel.basic_ack(x.delivery_tag)
+                                self.callback(x.body)
                             if no_items:
                                 logger.info("NO ITEMS")
                                 self._new_item_event.wait()
@@ -45,13 +45,10 @@ class VideoConsumerThread(Thread):
                 logger.error(e)
                 logger.info("RECONNECT")
 
-    def callback(self, ch, method, body):
+    def callback(self, body):
         logger.info("CALLBACK")
-        logger.info(ch)
-        logger.info(method)
         logger.info(body)
-        body_str = body.decode('utf-8')
-        body_json = json.loads(body_str)
+        body_json = json.loads(body)
 
         upload_id = int(body_json['upload_id'])
         failed = False

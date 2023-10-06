@@ -8,7 +8,7 @@ from fastapi import FastAPI, UploadFile
 from fastapi.params import Body
 from starlette.responses import HTMLResponse
 
-from .rabbit.connector import Connector
+from .rabbit.connectorAMQP import Connector
 from backend import logger
 from backend.rabbit.processed_video_consumer import VideoConsumerThread
 from backend.rabbit.publisher import process_file

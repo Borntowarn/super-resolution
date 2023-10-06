@@ -4,7 +4,7 @@ import amqp
 from pika.channel import Channel
 from pika.connection import Connection
 
-from .connector import Connector
+from .connectorAMQP import Connector
 from .. import logger
 
 
@@ -24,7 +24,8 @@ class RabbitPublisher:
 
     def publish(self, body) -> None:
         body = json.dumps(body, ensure_ascii=False)
-        self.rabbit_channel.basic_publish(body=body.encode('utf-8'), exchange='', routing_key=self.rabbit_output_queue)
+        msg = amqp.basic_message.Message(body=body)
+        self.rabbit_channel.basic_publish(msg, exchange='', routing_key=self.rabbit_output_queue)
         logger.info(f'Publish msg to {self.rabbit_output_queue}')
 
 

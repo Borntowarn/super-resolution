@@ -37,7 +37,6 @@ class RabbitConsumer:
             logger.info('Start processing a video')
             start_time = time.time()
             upscaled_path = self.pipeline(video_path)
-            # processed_path = str(Path(video_path).parent / 'upscaled' / Path(upscaled_path).name)
             batch_process_time = time.time() - start_time
             logger.info(f'Video has been processed in {batch_process_time}s')
         except Exception as e:
@@ -61,9 +60,7 @@ class RabbitConsumer:
                 break
 
     def listen(self) -> None:
-        self.rabbit_channel.basic_qos(prefetch_size=0,
-                                      prefetch_count=1,
-                                      a_global=False)
+        self.rabbit_channel.basic_qos(prefetch_size=0, prefetch_count=1, a_global=False)
         logger.info(f'Start consuming on {self.rabbit_input_queue}')
         while True:
             try:

@@ -22,7 +22,7 @@ services:
     volumes:
       - ../storage:/app/storage
     environment:
-      - RABBIT_URL=amqp://guest:guest@rabbitmq:5672
+      - RABBIT_URL=amqp://guest:guest@rabbitmq:5672/
       - WEBSITE_URL=http://site
       - BACKEND_INPUT_QUEUE=output
       - BACKEND_OUTPUT_QUEUE=input

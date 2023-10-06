@@ -15,19 +15,19 @@ class Connector:
     
     def _load_env_from_file(self, env_path):
         d = dict(dotenv_values(env_path))
-        os.environ['RABBIT_URL'] = d.get('RABBIT_URL')
-        os.environ['INPUT_QUEUE'] = d.get('INPUT_QUEUE')
-        os.environ['OUTPUT_QUEUE'] = d.get('OUTPUT_QUEUE')
+        self.url = d.get('RABBIT_URL')
+        self.input_queue = d.get('BACKEND_INPUT_QUEUE')
+        self.output_queue = d.get('BACKEND_OUTPUT_QUEUE')
     
     
     def _load_env_from_os(self):
-        self.url = os.environ.get('RABBIT_URL')
+        self.url = os.environ.get('RABBIT_URL', self.url)
         self.host, self.virtual_host = self.url.split('@')[1].split('/')
         _, self.username, self.password = self.url.split('@')[0].split(':')
         self.username = self.username.replace('//', '')
         
-        self.input_queue = os.environ.get('INPUT_QUEUE') 
-        self.output_queue = os.environ.get('OUTPUT_QUEUE')
+        self.input_queue = os.environ.get('BACKEND_INPUT_QUEUE', self.input_queue) 
+        self.output_queue = os.environ.get('BACKEND_OUTPUT_QUEUE', self.output_queue)
 
         if len(self.virtual_host) == 0:
             self.virtual_host = '/'
@@ -47,8 +47,7 @@ class Connector:
     
     
     def __del__(self):
-        if self.connection.is_open:
-            self.connection.close()
+        self.connection.close()
     
     
     def __enter__(self):
@@ -59,8 +58,7 @@ class Connector:
 
     
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.connection.is_open:
-            self.connection.close()
+        self.connection.close()
     
     
     def connect(self) -> Any:
@@ -69,6 +67,7 @@ class Connector:
             try:
                 tries += 1
                 logger.info(f'Trying to connect at {tries} time')
+                logger.info([self.host, self.username, self.password, self.virtual_host])
                 self.connection = amqp.Connection(
                     host=self.host,
                     userid=self.username,
