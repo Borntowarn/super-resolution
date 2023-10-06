@@ -12,20 +12,18 @@ from backend.rabbit.publisher import process_file
 
 
 class VideoConsumerThread(Thread):
-    def __init__(self, check_lock: Lock, callback_map: dict[int, dict], new_item_event: Event):
+    def __init__(self, con, check_lock: Lock, callback_map: dict[int, dict], new_item_event: Event):
         super().__init__()
         self._check_lock = check_lock
         self._callback_map = callback_map
         self._new_item_event = new_item_event
+        self.con = con
 
     def run(self) -> None:
-        con = Connector(
-            env_path='configs/rabbit.env'
-        )
         # connection, channel, input_queue, output_queue
         while True:
             try:
-                with con as (connection, channel, input_queue, output_queue):
+                with self.con as (connection, channel, input_queue, output_queue):
                     connection: Connection
                     channel: BlockingChannel
                     while True:
@@ -34,7 +32,7 @@ class VideoConsumerThread(Thread):
                                 if len(self._callback_map) <= 0:
                                     no_items = True
                             channel.basic_qos(prefetch_count=1)
-                            x = channel.basic_get(con.input_queue)
+                            x = channel.basic_get(input_queue)
                             if x != (None, None, None):
                                 channel.basic_ack(x[0].delivery_tag)
                                 self.callback(*x)
@@ -64,9 +62,11 @@ class VideoConsumerThread(Thread):
         callback = callback_json['callback']
         input_file = callback_json['path']
         try:
-            process_status = str(body_json['status'])
-            if process_status.lower() == 'success':
+            process_status = body_json['path'] != None
+            logger.info(process_status)
+            if process_status:
                 ready_file_path = body_json['path']
+                logger.info(ready_file_path)
                 callback(ready_file_path)
             else:
                 failed = True

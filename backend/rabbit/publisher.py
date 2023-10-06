@@ -28,10 +28,7 @@ class RabbitPublisher:
         logger.info(f'Publish msg to {self.rabbit_output_queue}')
 
 
-def process_file(path, upload_id):
-    con = Connector(
-        env_path='configs/rabbit.env'
-    )
+def process_file(con, path, upload_id):
     with con as (connection, channel, input_queue, output_queue):
         pub = RabbitPublisher(
             channel,
@@ -39,6 +36,3 @@ def process_file(path, upload_id):
             output_queue
         )
         pub.publish({'path': path, 'upload_id': upload_id})
-    # for _ in tqdm(range(10)):
-    #     sleep(1)
-    #     pass

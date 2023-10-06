@@ -1,8 +1,9 @@
 import amqp
-import json
 
 from typing import *
 from .. import logger
+from .answer_template import RabbitAnswer
+
 class RabbitPublisher:
 
     def __init__(
@@ -18,8 +19,11 @@ class RabbitPublisher:
         self.rabbit_channel = rabbit_channel
         self.rabbit_output_queue = rabbit_output_queue
     
-    def publish(self, body) -> None:
-        body = json.dumps(body, ensure_ascii=False)
-        msg = amqp.basic_message.Message(body=body)
+    def _create_answer(self, path: str, video_id: int) -> None:
+        return RabbitAnswer(path, video_id)
+    
+    def publish(self, path, video_id) -> None:
+        answer = self._create_answer(path, video_id)
+        msg = amqp.basic_message.Message(body=answer.json)
         self.rabbit_channel.basic_publish(msg, exchange='', routing_key=self.rabbit_output_queue)
         logger.info(f'Publish msg to {self.rabbit_output_queue}')

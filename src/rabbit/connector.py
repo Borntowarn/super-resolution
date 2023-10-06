@@ -9,16 +9,16 @@ from dotenv import dotenv_values
 class Connector:
     def __init__(self, env_path=None) -> None:
         if env_path:
-            self.load_env_from_file(env_path)
-        self.load_env_from_os()
+            self._load_env_from_file(env_path)
+        self._load_env_from_os()
 
-    def load_env_from_file(self, env_path):
+    def _load_env_from_file(self, env_path):
         d = dict(dotenv_values(env_path))
         os.environ['RABBIT_URL'] = d.get('RABBIT_URL')
         os.environ['INPUT_QUEUE'] = d.get('INPUT_QUEUE')
         os.environ['OUTPUT_QUEUE'] = d.get('OUTPUT_QUEUE')
     
-    def load_env_from_os(self):
+    def _load_env_from_os(self):
         self.url = os.environ.get('RABBIT_URL')
         self.host, self.virtual_host = self.url.split('@')[1].split('/')
         _, self.username, self.password = self.url.split('@')[0].split(':')
@@ -32,7 +32,7 @@ class Connector:
 
         logger.info('Envs are loaded')
     
-    def create_queue(self, channel, queue_name):
+    def _create_queue(self, channel, queue_name):
         channel.queue_declare(
             queue=queue_name,
             durable=True,
@@ -59,8 +59,8 @@ class Connector:
                 channel = connection.channel()
                 logger.info('Connection successful')
 
-                self.create_queue(channel,self.input_queue)
-                self.create_queue(channel,self.output_queue)
+                self._create_queue(channel,self.input_queue)
+                self._create_queue(channel,self.output_queue)
                 
                 return connection, channel, self.input_queue, self.output_queue
             except Exception as e:

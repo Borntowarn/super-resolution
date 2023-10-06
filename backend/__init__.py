@@ -3,7 +3,7 @@ import sys
 
 
 def get_logger():
-    logger_ = logging.getLogger('root')
+    logger_ = logging.getLogger()
 
     logger_.setLevel(logging.INFO)
     handler = logging.StreamHandler(sys.stdout)
