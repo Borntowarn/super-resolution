@@ -37,8 +37,8 @@ class RabbitConsumer:
             logger.info('Start processing a video')
             start_time = time.time()
             upscaled_path = self.pipeline(video_path)
-            batch_process_time = time.time() - start_time
-            logger.info(f'Video has been processed in {batch_process_time}s')
+            end_time = time.time() - start_time
+            logger.info(f'Video has been processed in {end_time}s')
         except Exception as e:
             upscaled_path = None
             logger.error(e)

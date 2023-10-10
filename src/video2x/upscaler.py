@@ -5,26 +5,22 @@ import time
 from PIL import Image
 from .processor import Processor
 
+import torch
 import numpy as np
 import torchvision.transforms as T
 import tritonclient.grpc as grpcclient
 from PIL import Image
 
 
-def test_infer(
-    triton_client,
-    model_name,
-    input0_data,
-):
+def inference(triton_client, model_name, input0_data):
     inputs = []
     outputs = []
     inputs.append(grpcclient.InferInput("input", [*input0_data.shape], "FP16"))
 
     # Initialize the data
     inputs[0].set_data_from_numpy(input0_data)
-
     outputs.append(grpcclient.InferRequestedOutput("output"))
-    query_params = {"test_1": "1", "test_2": "2"}
+    
     results = triton_client.infer(
         model_name,
         inputs,
@@ -133,32 +129,12 @@ class Upscaler:
         algorithm: str,
         noise: int,
     ) -> Image.Image:
-        """
-        upscale an image
-
-        :param image Image.Image: the image to upscale
-        :param output_width int: the desired output width
-        :param output_height int: the desired output height
-        :param algorithm str: the algorithm to use
-        :param noise int: the noise level (available only for some algorithms)
-        :rtype Image.Image: the upscaled image
-        """
-        width, height = image.size
-        
-
-        # process the image with the selected algorithm
         image = T.Compose([T.ToTensor()])(image).unsqueeze(0).numpy().astype(np.float16)
-        # print(image.shape)
-        image = test_infer(self.triton_client, model_name, image)
+        image = inference(self.triton_client, model_name, image)
         image = image.as_numpy("output").astype(np.float32)
-        image = np.where(image > 1, 1, image)
-        image = np.where(image < 0, 0, image)
-        import torch
+        image = np.clip(image, 0, 1)
         image = T.ToPILImage()(torch.tensor(image[0]))
-        
 
-        # downscale the image to the desired output size and
-        # save the image to disk
         return image.resize((output_width, output_height), Image.Resampling.LANCZOS)
 
 

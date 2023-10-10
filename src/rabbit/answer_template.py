@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 
 @dataclass
 class RabbitAnswer:
-    path: str
+    path: str | None
     upload_id: int
     json: str = field(init=False)
     

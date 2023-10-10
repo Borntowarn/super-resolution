@@ -1,10 +1,6 @@
 import json
-
 import amqp
-from pika.channel import Channel
-from pika.connection import Connection
 
-from .connectorAMQP import Connector
 from .. import logger
 
 
@@ -12,8 +8,8 @@ class RabbitPublisher:
 
     def __init__(
             self,
-            rabbit_channel: Channel,
-            rabbit_connection: Connection,
+            rabbit_channel,
+            rabbit_connection,
             rabbit_output_queue: str
     ):
         assert rabbit_channel.is_open, 'Failed connection to RabbitMQ'
@@ -30,6 +26,7 @@ class RabbitPublisher:
 
 
 def process_file(con, path, upload_id):
+    logger.info(f"Sent processing {path} to RabbitMQ")
     with con as (connection, channel, input_queue, output_queue):
         pub = RabbitPublisher(
             channel,

@@ -17,15 +17,14 @@ services:
     build:
       context: ..
       dockerfile: devops/Dockerfile.backend
-    container_name: FAST-API
-    hostname: fastapi
+    container_name: fastapi
     volumes:
       - ../storage:/app/storage
     environment:
       - RABBIT_URL=amqp://guest:guest@rabbitmq:5672/
       - WEBSITE_URL=http://site
-      - BACKEND_INPUT_QUEUE=output
-      - BACKEND_OUTPUT_QUEUE=input
+      - INPUT_QUEUE=output
+      - OUTPUT_QUEUE=input
     ports:
       - "${BACKEND_PORT}:80"
     depends_on:

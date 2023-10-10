@@ -11,29 +11,32 @@ class Model:
     def __init__(self) -> None:
         self.video2x = Video2X()
 
-    def _create_upscaled_path(self, video_path):
+    def _create_pathes(self, video_path):
         logger.info(video_path)
         
-        parts = Path(video_path).parts
-        storage_folder = parts[-3]
-        temp_folder = parts[-2]
+        video_path = Path(video_path)
+        root_path = os.getcwd()
+        storage_folder_name = video_path.parts[0]
+        # temp_folder_name = parts[-2]
+        upscaled_folder_name = 'upscaled'
         
-        storage_path = Path(os.getcwd()) / storage_folder
-        upscale_path = storage_path / 'upscaled'
+        storage_folder = os.path.join(root_path, storage_folder_name)
+        upscaled_folder = os.path.join(storage_folder, upscaled_folder_name)
         
-        input_path = storage_path / temp_folder / Path(video_path).name
-        upscaled_path = upscale_path / Path(video_path).name
-        returned_path = Path(storage_folder) / 'upscaled' / Path(video_path).name
+        # input_path = Path(os.getcwd()) / Path(video_path)
+        input_path = os.path.join(os.getcwd(), video_path)
+        upscaled_path = os.path.join(upscaled_folder, video_path.name)
+        returned_path = os.path.join(storage_folder_name, upscaled_folder_name, video_path.name)
         
-        if upscale_path.exists() is False:
-            upscale_path.mkdir()
+        if os.path.exists(upscaled_folder) is False:
+            os.mkdir(upscaled_folder)
         
-        logger.info([str(input_path), str(upscaled_path)])
-        return str(input_path), str(upscaled_path), str(returned_path)
+        logger.info([input_path, upscaled_path, returned_path])
+        return input_path, upscaled_path, returned_path
     
     def __call__(self, video_path):
         
-        input_path, upscaled_path, returned_path = self._create_upscaled_path(video_path)
+        input_path, upscaled_path, returned_path = self._create_pathes(video_path)
         model_name = 'model_tensorrt'
         shutil.copy(input_path, upscaled_path)
         

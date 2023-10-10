@@ -47,20 +47,15 @@ class Connector:
     
     
     def __del__(self):
-        if self.connection.is_open:
-            self.connection.close()
+        self.connection.close()
     
     
     def __enter__(self):
-        """
-        :return: connection, channel, input_queue, output_queue
-        """
         return self.connect()
 
     
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.connection.is_open:
-            self.connection.close()
+        self.connection.close()
     
     
     def connect(self) -> Any:

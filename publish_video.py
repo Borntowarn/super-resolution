@@ -10,19 +10,16 @@ parser = argparse.ArgumentParser(description='Videos to RabbitMQ')
 parser.add_argument('input', default='videos', type=str, help='Input dir/file relative !!!Storage!!! folder')
 
 if __name__ == '__main__':
-    con = Connector(
-        env_path='configs/rabbit.env'
-    )
+    con = Connector(env_path='configs/rabbit.env')
     connection, channel, input_queue, output_queue = con.connect()
     
     pub = RabbitPublisher(channel, connection, input_queue)
     
     args = parser.parse_args()
-    if os.path.isdir(f'./storage/{args.input}'):
-        folder = Path(f'./storage/{args.input}')
-        files = list(folder.rglob('*.mp4'))
-        for n, vid in enumerate(files):
-            vid_path = '/'.join(files[0].parts[1:])
-            pub.publish((Path('/adapter_triton/storage') / vid_path).as_posix(), n)
+    path = Path(args.input)
+    if os.path.isdir(path):
+        files = list(path.rglob('*.mp4'))
+        for vid_path in files:
+            pub.publish(Path(vid_path).as_posix(), -1)
     else:
-        pub.publish((Path('/adapter_triton/storage') / args.input).as_posix(), 0)
+        pub.publish(path.as_posix(), -1)
