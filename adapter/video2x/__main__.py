@@ -6,7 +6,6 @@ import sys
 from loguru import logger
 from rich import print as rich_print
 
-from . import __version__
 from .video2x import LOGURU_FORMAT, Video2X
 
 # algorithms available for upscaling tasks
@@ -120,17 +119,7 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def main() -> int:
-    """
-    command line entrypoint for direct CLI invocation
-
-    :rtype int: 0 if completed successfully, else other int
-    """
-
     try:
-        # display version and lawful informaition
-        if "--version" in sys.argv:
-            rich_print(LEGAL_INFO)
-            return 0
 
         # parse command line arguments
         args = parse_arguments()
@@ -155,12 +144,6 @@ def main() -> int:
 
         # add new sink with custom handler
         logger.add(sys.stderr, colorize=True, format=LOGURU_FORMAT)
-
-        # print package version and copyright notice
-        logger.opt(colors=True).info(f"<magenta>Video2X {__version__}</magenta>")
-        logger.opt(colors=True).info(
-            "<magenta>Copyright (C) 2018-2023 K4YT3X and contributors.</magenta>"
-        )
 
         # initialize video2x object
         video2x = Video2X()

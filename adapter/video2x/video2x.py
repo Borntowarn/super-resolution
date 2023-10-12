@@ -73,7 +73,6 @@ class Video2X:
     """
 
     def __init__(self, progress_callback: Optional[Callable] = None) -> None:
-        self.version = __version__
         self.progress_callback = progress_callback
 
     @staticmethod

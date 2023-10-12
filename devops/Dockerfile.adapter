@@ -2,7 +2,7 @@ FROM python:3.10
 
 RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
-COPY ../requirements.txt ./
+COPY ./adapter/requirements.txt ./
 RUN pip install -r requirements.txt
 
 WORKDIR adapter_triton

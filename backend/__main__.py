@@ -2,6 +2,8 @@ import os.path
 import tempfile
 from threading import Lock
 
+import sys
+import uvicorn
 import requests
 from fastapi import FastAPI, UploadFile
 from fastapi.params import Body
@@ -12,6 +14,7 @@ from .util import TempFolder
 from rabbit import RabbitConnector
 from rabbit import RabbitPublisher
 from .util import VideoConsumerThread
+
 
 tmp_folder = 'storage/tmp'
 
@@ -25,7 +28,7 @@ callback_map = {}
 check_lock = Lock()
 con = RabbitConnector()
 connection, channel, input_queue, output_queue = con.connect()
-publisher = RabbitPublisher(channel, connection, input_queue)
+publisher = RabbitPublisher(channel, connection, output_queue)
 
 web_server_api_send_video_url = os.environ.get('WEBSITE_URL').rstrip('/')+'/loadVideo'
 
@@ -65,13 +68,12 @@ async def upload_file(
                 'path': tmp_filename
             }
         
-        publisher.publish({'path': tmp_filename, 'upload_id': upload_id})
+        publisher.publish(tmp_filename, upload_id)
     except Exception as e:
-        logger.info(f"Error: {e}")
+        logger.error(f"Error: {e}")
     return "Hello " + file.filename + "!"
 
 
-def main():
+if __name__ == "__main__":
     video_processed_get_thread = VideoConsumerThread(con, check_lock, callback_map).start()
-
-main()
+    uvicorn.run(app, host="0.0.0.0", port=80)

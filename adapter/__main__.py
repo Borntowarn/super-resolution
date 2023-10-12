@@ -7,6 +7,7 @@ from .video2x import Video2X
 from rabbit import RabbitConnector
 from rabbit import RabbitConsumer
 
+
 class Model:
     def __init__(self) -> None:
         self.video2x = Video2X()
