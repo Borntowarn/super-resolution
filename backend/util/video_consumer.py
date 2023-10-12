@@ -1,5 +1,6 @@
 import json
 
+from backend import RabbitConnector
 from backend import logger
 from threading import Thread, Lock
 

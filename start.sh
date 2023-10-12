@@ -1,3 +1,3 @@
 #!bin/bash
 
-docker-compose -f devops/compose.yml up --build -d
+docker compose -f devops/compose.yml up --build -d

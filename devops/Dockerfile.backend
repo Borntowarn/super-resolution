@@ -7,6 +7,7 @@ COPY ./backend/requirements.txt  ./
 RUN pip install -r requirements.txt
 
 COPY ./backend ./backend
+COPY ./rabbit ./rabbit
 COPY ./configs ./configs
 
 CMD ["uvicorn", "backend.fastapi_app:app", "--host", "0.0.0.0", "--port", "80"]

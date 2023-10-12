@@ -1,7 +1,9 @@
-import logging
-import sys
+# from .connector import RabbitConnector
+# from .consumer import RabbitConsumer
+# from .publisher import RabbitPublisher
 
-# from rabbit import RabbitConnector, RabbitConsumer, RabbitPublisher
+import sys
+import logging
 
 def get_logger():
     logger_ = logging.getLogger()

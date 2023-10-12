@@ -1,11 +1,11 @@
-import amqp
+# import amqp
 import json
 import time
 import traceback
 
 
 from typing import *
-from .. import logger
+from . import logger
 from pathlib import Path
 from .publisher import RabbitPublisher
 
@@ -13,8 +13,8 @@ class RabbitConsumer:
 
     def __init__(
         self,
-        rabbit_channel: amqp.Channel,
-        rabbit_connection: amqp.Connection,
+        rabbit_channel,
+        rabbit_connection,
         rabbit_input_queue: str,
         rabbit_output_queue: str,
         pipeline: Callable

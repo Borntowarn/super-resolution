@@ -67,10 +67,10 @@ services:
     hostname: site
     build:
       context: ..
-      dockerfile: ./site/public_html/docker/php-apache/Dockerfile
+      dockerfile: ./frontend/public_html/docker/php-apache/Dockerfile
     volumes:
-      - ../site/public_html/src:/var/www/html/
-      - ../site/public_html/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ../frontend/public_html/src:/var/www/html/
+      - ../frontend/public_html/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     environment:
       - BACKEND_API_URL=http://fastapi
       - SITE_PORT=${SITE_PORT}

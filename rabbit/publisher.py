@@ -1,15 +1,15 @@
-import amqp
+# import amqp
 
 from typing import *
-from .. import logger
+from . import logger
 from .answer_template import RabbitAnswer
 
 class RabbitPublisher:
 
     def __init__(
         self, 
-        rabbit_channel: amqp.Channel,
-        rabbit_connection: amqp.Connection,
+        rabbit_channel,
+        rabbit_connection,
         rabbit_output_queue: str
     ):
 

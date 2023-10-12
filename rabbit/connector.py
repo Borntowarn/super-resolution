@@ -1,12 +1,12 @@
 import os
-import amqp
+# import amqp
 import time
 
-from .. import logger
+from . import logger
 from typing import *
-from dotenv import dotenv_values
+# from dotenv import dotenv_values
 
-class Connector:
+class RabbitConnector:
     def __init__(self, env_path=None) -> None:
         if env_path:
             self._load_env_from_file(env_path)

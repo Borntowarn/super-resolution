@@ -5,14 +5,13 @@ from threading import Lock
 import requests
 from fastapi import FastAPI, UploadFile
 from fastapi.params import Body
-from starlette.responses import HTMLResponse
 
 from . import logger
 from pathlib import Path
 from .util import TempFolder
-from .rabbit import process_file
-from .rabbit import RabbitConnector
-from .rabbit import VideoConsumerThread
+from rabbit import RabbitConnector
+from backend import RabbitPublisher
+from .util import VideoConsumerThread
 
 tmp_folder = 'storage/tmp'
 
@@ -25,6 +24,8 @@ app = FastAPI(
 callback_map = {}
 check_lock = Lock()
 con = RabbitConnector()
+connection, channel, input_queue, output_queue = con.connect()
+publisher = RabbitPublisher(channel, connection, input_queue)
 
 web_server_api_send_video_url = os.environ.get('WEBSITE_URL').rstrip('/')+'/loadVideo'
 
@@ -63,15 +64,11 @@ async def upload_file(
                 'callback': lambda ready_file: send_processed_file(ready_file, upload_id),
                 'path': tmp_filename
             }
-        process_file(con, tmp_filename, upload_id)
+        
+        publisher.publish({'path': tmp_filename, 'upload_id': upload_id})
     except Exception as e:
-        print(f"Error: {e}")
+        logger.info(f"Error: {e}")
     return "Hello " + file.filename + "!"
-
-
-@app.get("/")
-async def root():
-    return HTMLResponse("<h1>Не расчитано для браузера!</h1>")
 
 
 def main():
