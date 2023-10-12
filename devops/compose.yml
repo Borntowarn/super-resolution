@@ -61,6 +61,8 @@ services:
       - OUTPUT_QUEUE=output
     deploy:
       replicas: 1
+    depends_on:
+      - rabbitmq
   
   php-apache-environment:
     container_name: php-apache

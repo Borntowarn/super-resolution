@@ -45,17 +45,13 @@ class VideoEncoder:
             r=frame_rate,
         )
 
-        # copy additional streams from original file
-        # https://ffmpeg.org/ffmpeg.html#Stream-specifiers-1
         additional_streams = [
-            # original["1:v?"],
             original["a?"] if copy_audio is True else None,
             original["s?"] if copy_subtitle is True else None,
             original["d?"] if copy_data is True else None,
             original["t?"] if copy_attachments is True else None,
         ]
 
-        # run FFmpeg and produce final output
         self.encoder = subprocess.Popen(
             ffmpeg.compile(
                 ffmpeg.output(

@@ -37,19 +37,17 @@ class Model:
         
         input_path, upscaled_path, returned_path = self._create_pathes(video_path)
         model_name = 'model_tensorrt'
-        shutil.copy(input_path, upscaled_path)
+        # shutil.copy(input_path, upscaled_path)
         
-        # self.video2x.upscale(
-        #     model_name,
-        #     input_path,
-        #     upscaled_path,
-        #     856,
-        #     480,
-        #     3,
-        #     2,
-        #     0,
-        #     ''
-        # )
+        self.video2x.upscale(
+            model_name,
+            input_path,
+            upscaled_path,
+            856,
+            480,
+            1,
+            0,
+        )
         return returned_path
 
 

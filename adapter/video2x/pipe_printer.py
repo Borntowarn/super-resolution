@@ -21,18 +21,13 @@ class PipePrinter(threading.Thread):
 
     def run(self) -> None:
         self.running = True
-
-        # keep printing contents in the PIPE
         while self.running is True:
             time.sleep(0.5)
-
             try:
                 self._print_output()
-
-            # pipe closed
             except ValueError:
                 break
-
+        
         return super().run()
 
     def stop(self) -> None:

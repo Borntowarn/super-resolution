@@ -130,7 +130,6 @@ class VideoDecoderThread(Thread):
         previous_frame = None
         for frame_index, frame in enumerate(self.decoder):
             while True:
-                # check for the stop signal
                 if self.running is False:
                     self.decoder.join()
                     return

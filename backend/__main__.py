@@ -18,11 +18,11 @@ from .util import VideoConsumerThread
 
 tmp_folder = 'storage/tmp'
 
-_temp_folder_obj = TempFolder(tmp_folder)
+_tmp_folder_obj = TempFolder(tmp_folder)
 app = FastAPI(
     docs_url='/api/docs',
-    on_startup=[_temp_folder_obj.delete_folder, _temp_folder_obj.make_folder],
-    on_shutdown=[_temp_folder_obj.delete_folder],
+    on_startup=[_tmp_folder_obj.make_folder],
+    on_shutdown=[_tmp_folder_obj.delete_folder],
 )
 callback_map = {}
 check_lock = Lock()
@@ -30,7 +30,7 @@ con = RabbitConnector()
 connection, channel, input_queue, output_queue = con.connect()
 publisher = RabbitPublisher(channel, connection, output_queue)
 
-web_server_api_send_video_url = os.environ.get('WEBSITE_URL').rstrip('/')+'/loadVideo'
+web_server_api_send_video_url = os.environ.get('WEBSITE_URL').rstrip('/') + '/loadVideo'
 
 
 def send_processed_file(file, upload_id: int):
@@ -41,10 +41,10 @@ def send_processed_file(file, upload_id: int):
             data={'upload_id': str(upload_id)},
             timeout=10
         )
-        logger.info(f"Sent processed video to web server with {result.text}")
+        logger.info(f'Sent processed video to web server with {result.text}')
 
 
-@app.post("/api/upload_file")
+@app.post('/api/upload_file')
 async def upload_file(
     file: UploadFile,
     upload_id: int = Body(embed=True),
@@ -52,9 +52,9 @@ async def upload_file(
     generate_comments: bool = Body(embed=True)
 ):
     if file is None:
-        return "Не выбран файл"
+        return 'Не выбран файл'
     if upload_id is None or upload_id < 0:
-        return "Не указан или неверно введён upload_id"
+        return 'Не указан или неверно введён upload_id'
 
     file_suffix = Path(file.filename).suffix
     tmp_filename = tempfile.mktemp(dir=tmp_folder, suffix=file_suffix)
@@ -70,9 +70,8 @@ async def upload_file(
         
         publisher.publish(tmp_filename, upload_id)
     except Exception as e:
-        logger.error(f"Error: {e}")
-    return "Hello " + file.filename + "!"
-
+        logger.error(f'Error: {e}')
+    return 'success'
 
 if __name__ == "__main__":
     video_processed_get_thread = VideoConsumerThread(con, check_lock, callback_map).start()
