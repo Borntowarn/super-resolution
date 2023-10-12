@@ -1,7 +1,7 @@
-# import amqp
+import amqp
 
 from typing import *
-from . import logger
+from loguru import logger
 from .answer_template import RabbitAnswer
 
 class RabbitPublisher:

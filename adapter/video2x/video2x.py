@@ -25,7 +25,6 @@ from rich.text import Text
 
 from .processor import Processor
 
-from . import __version__
 from .decoder import VideoDecoder, VideoDecoderThread
 from .encoder import VideoEncoder
 from .interpolator import Interpolator, InterpolatorProcessor

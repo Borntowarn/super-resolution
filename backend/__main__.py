@@ -6,11 +6,11 @@ import requests
 from fastapi import FastAPI, UploadFile
 from fastapi.params import Body
 
-from . import logger
+from loguru import logger
 from pathlib import Path
 from .util import TempFolder
 from rabbit import RabbitConnector
-from backend import RabbitPublisher
+from rabbit import RabbitPublisher
 from .util import VideoConsumerThread
 
 tmp_folder = 'storage/tmp'

@@ -1,11 +1,11 @@
-# import amqp
+import amqp
 import json
 import time
 import traceback
 
 
 from typing import *
-from . import logger
+from loguru import logger
 from pathlib import Path
 from .publisher import RabbitPublisher
 

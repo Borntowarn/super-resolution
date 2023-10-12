@@ -1,11 +1,11 @@
 import os
 import shutil
 
-from . import logger
+from loguru import logger
 from pathlib import Path
-# from .video2x import Video2X
-from rabbit.connector import RabbitConnector
-from rabbit.consumer import RabbitConsumer
+from .video2x import Video2X
+from rabbit import RabbitConnector
+from rabbit import RabbitConsumer
 
 class Model:
     def __init__(self) -> None:
