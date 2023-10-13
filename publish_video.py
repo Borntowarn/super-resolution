@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from src.rabbit.connector import Connector
-from src.rabbit.publisher import RabbitPublisher
+from rabbit.connector import Connector
+from rabbit.publisher import RabbitPublisher
 
 import os
 import argparse

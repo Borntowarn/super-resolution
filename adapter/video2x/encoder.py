@@ -67,7 +67,6 @@ class VideoEncoder:
                     # cutoff=18000,
                     r=frame_rate,
                     map_metadata=1,
-                    metadata="comment=Processed with Video2X",
                 )
                 .global_args("-hide_banner")
                 .global_args("-nostats")

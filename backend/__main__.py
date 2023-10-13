@@ -1,13 +1,13 @@
-import os.path
+import os
 import tempfile
 from threading import Lock
 
-import sys
 import uvicorn
 import requests
 from fastapi import FastAPI, UploadFile
 from fastapi.params import Body
 
+from dotenv import dotenv_values
 from loguru import logger
 from pathlib import Path
 from .util import TempFolder
@@ -16,20 +16,27 @@ from rabbit import RabbitPublisher
 from .util import VideoConsumerThread
 
 
-tmp_folder = 'storage/tmp'
+def load_folder_envs(env_path):
+    d = dict(dotenv_values(env_path))
+    temp_folder_name = d['TEMP_FOLDER']
+    storage_folder = d['STORAGE_FOLDER']
+    return storage_folder, temp_folder_name
 
-_tmp_folder_obj = TempFolder(tmp_folder)
+tmp_folder = os.path.join(*load_folder_envs('configs/folder.env'))
+tmp_path = TempFolder(tmp_folder)
+
 app = FastAPI(
     docs_url='/api/docs',
-    on_startup=[_tmp_folder_obj.make_folder],
-    on_shutdown=[_tmp_folder_obj.delete_folder],
+    on_startup=[tmp_path.make_folder],
+    on_shutdown=[tmp_path.delete_folder],
 )
+
 callback_map = {}
 check_lock = Lock()
+
 con = RabbitConnector()
 connection, channel, input_queue, output_queue = con.connect()
 publisher = RabbitPublisher(channel, connection, output_queue)
-
 web_server_api_send_video_url = os.environ.get('WEBSITE_URL').rstrip('/') + '/loadVideo'
 
 
@@ -71,6 +78,7 @@ async def upload_file(
         publisher.publish(tmp_filename, upload_id)
     except Exception as e:
         logger.error(f'Error: {e}')
+        return 'failed'
     return 'success'
 
 if __name__ == "__main__":

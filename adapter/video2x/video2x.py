@@ -1,12 +1,11 @@
 import os
 os.environ["LOGURU_LEVEL"] = "INFO"
 
-import ctypes
+import time
 import math
 import sys
-import time
 from enum import Enum
-from multiprocessing import Manager, Pool, Queue, Value
+from multiprocessing import Manager, Pool, Queue
 from pathlib import Path
 from typing import  Callable, Optional
 
@@ -31,14 +30,13 @@ from .decoder import VideoDecoder, VideoDecoderThread
 from .encoder import VideoEncoder
 from .upscaler import UpscalerProcessor
 
+
 # format string for Loguru loggers
 LOGURU_FORMAT = (
     "<green>{time:HH:mm:ss.SSSSSS!UTC}</green> | "
     "<level>{level: <8}</level> | "
     "<level>{message}</level>"
 )
-
-
 
 
 class ProcessingSpeedColumn(ProgressColumn):
@@ -52,32 +50,15 @@ class ProcessingSpeedColumn(ProgressColumn):
         )
 
 
-class ProcessingMode(Enum):
-    UPSCALE = {"label": "Upscaling", "processor": UpscalerProcessor}
-
-
 class Video2X:
-    """
-    Video2X class
-
-    provides two vital functions:
-        - upscale: perform upscaling on a file
-        - interpolate: perform motion interpolation on a file
-    """
-
     def __init__(self, progress_callback: Optional[Callable] = None) -> None:
         self.progress_callback = progress_callback
 
     @staticmethod
     def _get_video_info(path: Path) -> tuple:
-        """
-        get video file information with FFmpeg
-
-        :param path Path: video file path
-        :raises RuntimeError: raised when video stream isn't found
-        """
         # probe video file info
         logger.info("Reading input video information")
+        logger.info(path)
         for stream in ffmpeg.probe(path)["streams"]:
             if stream["codec_type"] == "video":
                 video_info = stream
@@ -175,14 +156,6 @@ class Video2X:
         task = self.progress.add_task(
             f"[cyan]Upscaling", total=total_frames
         )
-        
-        for i in range(100):
-            if i == 0:
-                self.progress.disable = False
-                self.progress.start()
-            import time
-            time.sleep(0.1)
-            self.progress.update(task, completed=i + 1)
 
         # a temporary variable that stores the exception
         exceptions = []
@@ -216,11 +189,6 @@ class Video2X:
                     if self.progress_callback is not None:
                         self.progress_callback(frame_index + 1, total_frames)
                     frame_index += 1
-
-        except (SystemExit) as error:
-            logger.warning("Exit signal received, exiting gracefully")
-            logger.warning("Press ^C again to force terminate")
-            exceptions.append(error)
 
         except Exception as error:
             logger.exception(error)

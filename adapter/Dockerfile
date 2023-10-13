@@ -7,7 +7,8 @@ RUN pip install -r requirements.txt
 
 WORKDIR adapter_triton
 
-COPY ../adapter adapter/
-COPY ../rabbit rabbit/
+COPY ./adapter adapter/
+COPY ./rabbit rabbit/
+COPY ./configs configs/
 
 CMD ["python", "-m", "adapter"]

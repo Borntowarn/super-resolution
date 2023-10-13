@@ -1,6 +1,8 @@
 import os
 import shutil
+import sys
 
+from dotenv import dotenv_values
 from loguru import logger
 from pathlib import Path
 from .video2x import Video2X
@@ -9,8 +11,15 @@ from rabbit import RabbitConsumer
 
 
 class Model:
-    def __init__(self) -> None:
+    def __init__(self, folder_envs) -> None:
         self.video2x = Video2X()
+        self._load_folder_envs(folder_envs)
+    
+    
+    def _load_folder_envs(self, env_path):
+        d = dict(dotenv_values(env_path))
+        logger.info(d)
+        self.upscaled_folder_name = d['UPSCALED_FOLDER']
 
     def _create_pathes(self, video_path):
         logger.info(video_path)
@@ -18,14 +27,13 @@ class Model:
         video_path = Path(video_path)
         root_path = os.getcwd()
         storage_folder_name = video_path.parts[0]
-        upscaled_folder_name = 'upscaled'
         
         storage_folder = os.path.join(root_path, storage_folder_name)
-        upscaled_folder = os.path.join(storage_folder, upscaled_folder_name)
+        upscaled_folder = os.path.join(storage_folder, self.upscaled_folder_name)
         
         input_path = os.path.join(os.getcwd(), video_path)
         upscaled_path = os.path.join(upscaled_folder, video_path.name)
-        returned_path = os.path.join(storage_folder_name, upscaled_folder_name, video_path.name)
+        returned_path = os.path.join(storage_folder_name, self.upscaled_folder_name, video_path.name)
         
         if os.path.exists(upscaled_folder) is False:
             os.mkdir(upscaled_folder)
@@ -52,8 +60,9 @@ class Model:
 
 
 if __name__ == '__main__':
+    model = Model('configs/folder.env')
+    
     con = RabbitConnector()
-    model = Model()
 
     connection, channel, input_queue, output_queue = con.connect()
 
