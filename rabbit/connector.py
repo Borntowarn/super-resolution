@@ -1,10 +1,11 @@
 import os
-import amqp
 import time
-
-from loguru import logger
 from typing import *
+
+import amqp
 from dotenv import dotenv_values
+from loguru import logger
+
 
 class RabbitConnector:
     def __init__(self, env_path=None) -> None:

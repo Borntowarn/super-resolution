@@ -25,17 +25,6 @@ LOGURU_FFMPEG_LOGLEVELS = {
 
 
 class VideoDecoder:
-    """
-    A video decoder that generates frames read from FFmpeg.
-
-    :param input_path pathlib.Path: the input file's path
-    :param input_width int: the input file's width
-    :param input_height int: the input file's height
-    :param frame_rate float: the input file's frame rate
-    :param pil_ignore_max_image_pixels bool: setting this to True
-        disables PIL's "possible DDoS" warning
-    """
-
     def __init__(
         self,
         input_path: pathlib.Path,

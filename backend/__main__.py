@@ -1,19 +1,18 @@
 import os
 import tempfile
+from pathlib import Path
 from threading import Lock
 
-import uvicorn
 import requests
+import uvicorn
+from dotenv import dotenv_values
 from fastapi import FastAPI, UploadFile
 from fastapi.params import Body
-
-from dotenv import dotenv_values
 from loguru import logger
-from pathlib import Path
-from .util import TempFolder
-from rabbit import RabbitConnector
-from rabbit import RabbitPublisher
-from .util import VideoConsumerThread
+
+from rabbit import RabbitConnector, RabbitPublisher
+
+from .util import TempFolder, VideoConsumerThread
 
 
 def load_folder_envs(env_path):

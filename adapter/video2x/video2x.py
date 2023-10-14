@@ -1,42 +1,24 @@
-import os
-os.environ["LOGURU_LEVEL"] = "INFO"
-
-import time
 import math
 import sys
+import time
 from enum import Enum
 from multiprocessing import Manager, Pool, Queue
 from pathlib import Path
-from typing import  Callable, Optional
+from typing import Callable, Optional
 
-import ffmpeg
 import cv2
+import ffmpeg
 from loguru import logger
 from rich.console import Console
 from rich.file_proxy import FileProxy
-from rich.progress import (
-    BarColumn,
-    Progress,
-    ProgressColumn,
-    Task,
-    TimeElapsedColumn,
-    TimeRemainingColumn,
-)
+from rich.progress import (BarColumn, Progress, ProgressColumn, Task,
+                           TimeElapsedColumn, TimeRemainingColumn)
 from rich.text import Text
-
-from .processor import Processor
 
 from .decoder import VideoDecoder, VideoDecoderThread
 from .encoder import VideoEncoder
+from .processor import Processor
 from .upscaler import UpscalerProcessor
-
-
-# format string for Loguru loggers
-LOGURU_FORMAT = (
-    "<green>{time:HH:mm:ss.SSSSSS!UTC}</green> | "
-    "<level>{level: <8}</level> | "
-    "<level>{message}</level>"
-)
 
 
 class ProcessingSpeedColumn(ProgressColumn):
@@ -97,7 +79,7 @@ class Video2X:
         original_stderr = sys.stderr
 
         # create console for rich's Live display
-        console = Console()
+        console = Console(color_system="truecolor")
 
         # redirect STDOUT and STDERR to console
         sys.stdout = FileProxy(console, sys.stdout)
@@ -105,11 +87,9 @@ class Video2X:
 
         # re-add Loguru to point to the new STDERR
         logger.remove()
-        logger.add(sys.stderr, colorize=True, format=LOGURU_FORMAT)
+        logger.add(sys.stderr, colorize=True)
 
-        # TODO: add docs
         tasks_queue = Queue(maxsize=processes * 10)
-        # logger.info(tasks_queue.)
         processed_frames = Manager().dict()
 
         # set up and start decoder thread
@@ -186,6 +166,7 @@ class Video2X:
                             del processed_frames[frame_index - 1]
 
                     self.progress.update(task, completed=frame_index + 1)
+                    logger.info(f"Processed: {frame_index + 1} / {total_frames}")
                     if self.progress_callback is not None:
                         self.progress_callback(frame_index + 1, total_frames)
                     frame_index += 1
@@ -229,7 +210,7 @@ class Video2X:
 
             # re-add Loguru to point to the restored STDERR
             logger.remove()
-            logger.add(sys.stderr, colorize=True, format=LOGURU_FORMAT)
+            logger.add(sys.stderr, colorize=True)
 
             # raise the first collected error
             if len(exceptions) > 0:

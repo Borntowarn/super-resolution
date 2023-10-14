@@ -1,13 +1,14 @@
-import amqp
 import json
 import time
 import traceback
-
-
-from typing import *
-from loguru import logger
 from pathlib import Path
+from typing import *
+
+import amqp
+from loguru import logger
+
 from .publisher import RabbitPublisher
+
 
 class RabbitConsumer:
 

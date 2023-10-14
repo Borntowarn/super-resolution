@@ -1,13 +1,15 @@
 import os
 import shutil
 import sys
+from pathlib import Path
 
+import torch
 from dotenv import dotenv_values
 from loguru import logger
-from pathlib import Path
+
+from rabbit import RabbitConnector, RabbitConsumer
+
 from .video2x import Video2X
-from rabbit import RabbitConnector
-from rabbit import RabbitConsumer
 
 
 class Model:

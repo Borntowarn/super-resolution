@@ -10,4 +10,6 @@ COPY ./backend ./backend
 COPY ./rabbit ./rabbit
 COPY ./configs ./configs
 
+ENV LOGURU_COLORIZE "true"
+
 CMD ["python", "-m", "backend"]

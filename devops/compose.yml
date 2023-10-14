@@ -50,7 +50,7 @@ services:
       context: ..
       dockerfile: adapter/Dockerfile   
     volumes:
-      - ../storage:/adapter_triton/storage      # Монтируемое хранилилище
+      - ../storage:/app/storage      # Монтируемое хранилилище
     privileged: true
     environment:
       - RABBIT_URL=amqp://guest:guest@rabbitmq:5672/
