@@ -2,12 +2,12 @@ FROM python:3.10
 
 WORKDIR /app
 
-COPY ./backend/requirements.txt  ./
+COPY ./services/backend/requirements.txt  ./
 
 RUN pip install -r requirements.txt
 
-COPY ./backend ./backend
-COPY ./rabbit ./rabbit
+COPY ./services/backend ./backend
+COPY ./services/rabbit ./rabbit
 COPY ./configs ./configs
 
 ENV LOGURU_COLORIZE "true"

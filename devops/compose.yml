@@ -5,7 +5,6 @@ services:
   rabbitmq:
     image: rabbitmq:3.12-management
     container_name: rabbitmq
-    hostname: rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -16,7 +15,7 @@ services:
   fastapi:
     build:
       context: ..
-      dockerfile: backend/Dockerfile
+      dockerfile: services/backend/Dockerfile
     volumes:
       - ../storage:/app/storage
     environment:
@@ -33,7 +32,7 @@ services:
   #   image: nvcr.io/nvidia/tritonserver:23.08-py3
   #   command: ["tritonserver", "--model-repository=/models"]
   #   volumes:
-  #     - ../tensorrt_models_running:/models      # Папка с движками моделей и конфигами
+  #     - ../models/tensorrt_models_running:/models      # Папка с движками моделей и конфигами
   #   ports:
   #     - "8000:8000"
   #     - "8001:8001"
@@ -48,10 +47,9 @@ services:
   adapter:
     build:
       context: ..
-      dockerfile: adapter/Dockerfile   
+      dockerfile: services/adapter/Dockerfile   
     volumes:
       - ../storage:/app/storage      # Монтируемое хранилилище
-    privileged: true
     environment:
       - RABBIT_URL=amqp://guest:guest@rabbitmq:5672/
       - INPUT_QUEUE=input
@@ -66,10 +64,10 @@ services:
     hostname: site
     build:
       context: ..
-      dockerfile: ./frontend/public_html/docker/php-apache/Dockerfile
+      dockerfile: services/frontend/public_html/docker/php-apache/Dockerfile
     volumes:
-      - ../frontend/public_html/src:/var/www/html/
-      - ../frontend/public_html/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ../services/frontend/public_html/src:/var/www/html/
+      - ../services/frontend/public_html/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
     environment:
       - BACKEND_API_URL=http://fastapi
       - SITE_PORT=${FRONTEND_PORT}
