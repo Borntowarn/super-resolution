@@ -1,0 +1,6 @@
+python-dotenv
+amqp
+loguru
+tritonclient[all]
+opencv-python
+numpy
