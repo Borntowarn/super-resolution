@@ -1,6 +1,5 @@
 import json
 
-from rabbit import RabbitConnector
 from loguru import logger
 from threading import Thread, Lock
 

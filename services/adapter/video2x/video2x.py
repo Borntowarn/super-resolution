@@ -1,7 +1,6 @@
 import math
 import sys
 import time
-from enum import Enum
 from multiprocessing import Manager, Pool, Queue
 from pathlib import Path
 from typing import Callable, Optional
@@ -22,8 +21,6 @@ from .upscaler import UpscalerProcessor
 
 
 class ProcessingSpeedColumn(ProgressColumn):
-    """Custom progress bar column that displays the processing speed"""
-
     def render(self, task: Task) -> Text:
         speed = task.finished_speed or task.speed
         return Text(

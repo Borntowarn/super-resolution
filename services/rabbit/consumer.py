@@ -1,10 +1,8 @@
 import json
 import time
 import traceback
-from pathlib import Path
 from typing import *
 
-import amqp
 from loguru import logger
 
 from .publisher import RabbitPublisher
