@@ -23,15 +23,15 @@ class Model:
     def _create_pathes(self, video_path):
         logger.info(video_path)
         
-        video_path = Path(video_path)
+        video_path = Path(video_path) # relative video path
         root_path = os.getcwd()
-        storage_folder_name = video_path.parts[0]
+        storage_folder_name = video_path.parts[0] 
         
-        storage_folder = os.path.join(root_path, storage_folder_name)
-        upscaled_folder = os.path.join(storage_folder, self.upscaled_folder_name)
+        storage_folder = os.path.join(root_path, storage_folder_name) # storage dir
+        upscaled_folder = os.path.join(storage_folder, self.upscaled_folder_name) # storage upscaled dir
         
-        input_path = os.path.join(os.getcwd(), video_path)
-        upscaled_path = os.path.join(upscaled_folder, video_path.name)
+        input_path = os.path.join(os.getcwd(), video_path) # video abspath
+        upscaled_path = os.path.join(upscaled_folder, video_path.name) # relative by storage folder upscaled path
         returned_path = os.path.join(storage_folder_name, self.upscaled_folder_name, video_path.name)
         
         if os.path.exists(upscaled_folder) is False:
@@ -47,13 +47,13 @@ class Model:
         # shutil.copy(input_path, upscaled_path)
         
         self.video2x.upscale(
-            model_name,
-            input_path,
-            upscaled_path,
-            856,
-            480,
-            1,
-            0,
+            model_name, # model name in triton
+            input_path, # video path
+            upscaled_path, # upscaled path
+            856, # target width
+            480, # target height
+            1, # process number
+            0, # frame threshold
         )
         return returned_path
 

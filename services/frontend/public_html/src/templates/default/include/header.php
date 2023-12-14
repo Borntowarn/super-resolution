@@ -2,10 +2,7 @@
     <div class="container">
         <div class="header-line">
             <div class="logo">
-                <img src="<?=$SITE_URL?>templates/default/assets/img/image.png" alt="">
-            </div>
-            <div class="team-logo">
-                <span>Нейр<em>ON</em></span>
+                <img src="<?=$SITE_URL?>templates/default/assets/img/logo_test.png" alt="">
             </div>
         </div>
     </div>

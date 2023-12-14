@@ -7,7 +7,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/templates/default/include/header.php'
 <section>
     <div class="container">
         <div class="section-title">
-            Мои видео
+            Загруженные видео
         </div>
         <div class="toVidList">
             <a href="<?=$SITE_URL?>studio?path=studio">Загрузить видео <ion-icon name="arrow-forward-outline"></ion-icon></a>
