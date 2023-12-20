@@ -4,6 +4,7 @@ site/public_html/src/files/uploads/*
 !site/public_html/src/files/uploads/zerofile
 *.mp4
 !storage/*
+*.csv
 
 flagged/
 tmp/

@@ -52,16 +52,28 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/templates/default/include/header.php'
                         <div class="info-inputs">
                             <input type="text" class="video-name" id="video_name" placeholder="Введите название...">
                             <textarea name="" cols="30" rows="10" id="video_description" class="video-desc" placeholder="Введите описание..."></textarea>
+                            <div class="video-checkbox">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="vid-quality">
+                                    <label for="vid-quality">Улучшить качество</label>
+                                    <span id="better-quality">?</span>
+                                </div>
+                                <div class="checkbox">
+                                    <input type="checkbox" id="vid-commentary">
+                                    <label for="vid-quality2">Добавить тифлокомментарии</label>
+                                    <span id="typhlocommentary">?</span>
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" id="upload_video_btn" style="
+                    </div>
+                    <button type="submit" id="upload_video_btn" style="
                             width: 100%;
-                            max-width: 130px;
+                            max-width: 150px;
                             margin-top: 15px;
-                            align-self: left;
+                            align-self: flex-end;
                         ">
                         Загрузить
-                        </button>
-                    </div>
+                    </button>
 <!--                </form>-->
             </div>
         </div>

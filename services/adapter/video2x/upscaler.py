@@ -36,11 +36,11 @@ class Upscaler:
         output_height: int,
     ) -> Image.Image:
         time.sleep(0.1)
-        # image = T.Compose([T.ToTensor()])(image).unsqueeze(0).numpy().astype(np.float16)
-        # image = inference(self.triton_client, model_name, image)
-        # image = image.as_numpy("output").astype(np.float32)
-        # image = np.clip(image, 0, 1)
-        # image = T.ToPILImage()(torch.tensor(image[0]))
+        image = T.Compose([T.ToTensor()])(image).unsqueeze(0).numpy().astype(np.float16)
+        image = inference(self.triton_client, model_name, image)
+        image = image.as_numpy("output").astype(np.float32)
+        image = np.clip(image, 0, 1)
+        image = T.ToPILImage()(torch.tensor(image[0]))
 
         return image.resize((output_width, output_height), Image.Resampling.LANCZOS)
 

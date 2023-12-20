@@ -13,3 +13,4 @@ numpy
 tritonclient[all]
 opencv-python
 rich
+protobuf

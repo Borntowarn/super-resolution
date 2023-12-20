@@ -28,21 +28,22 @@ services:
     depends_on:
       - rabbitmq
   
-  # tritonserver:
-  #   image: nvcr.io/nvidia/tritonserver:23.08-py3
-  #   command: ["tritonserver", "--model-repository=/models"]
-  #   volumes:
-  #     - ../models/tensorrt_models_running:/models      # Папка с движками моделей и конфигами
-  #   ports:
-  #     - "8000:8000"
-  #     - "8001:8001"
-  #     - "8002:8002"
-  #   deploy:                                     # Разрешение на использование GPU
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - capabilities: [gpu]
-  #             driver: nvidia
+  tritonserver:
+    image: nvcr.io/nvidia/tritonserver:23.11-py3
+    command: ["tritonserver", "--model-repository=/models"]
+    volumes:
+      - ../models/tensorrt_models_running:/models      # Папка с движками моделей и конфигами
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+    deploy:                                     # Разрешение на использование GPU
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+              device_ids: ['0']
+              driver: nvidia
   
   adapter:
     build:
